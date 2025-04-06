@@ -1,0 +1,116 @@
+entry_date,exit_date,entry_price,exit_price,pnl_%,hold_days,max_confidence
+2023-10-09,2023-10-10,"Ticker
+RELIANCE.NS    1141.35
+Name: 2023-10-09 00:00:00, dtype: float64","Ticker
+RELIANCE.NS    1146.39
+Name: 2023-10-10 00:00:00, dtype: float64",0.44,1,0.732
+2023-10-11,2023-10-12,"Ticker
+RELIANCE.NS    1164.59
+Name: 2023-10-11 00:00:00, dtype: float64","Ticker
+RELIANCE.NS    1166.75
+Name: 2023-10-12 00:00:00, dtype: float64",0.19,1,0.763
+2024-01-15,2024-01-24,"Ticker
+RELIANCE.NS    1384.69
+Name: 2024-01-15 00:00:00, dtype: float64","Ticker
+RELIANCE.NS    1334.78
+Name: 2024-01-24 00:00:00, dtype: float64",-3.6,6,0.951
+2024-03-15,2024-03-19,"Ticker
+RELIANCE.NS    1408.63
+Name: 2024-03-15 00:00:00, dtype: float64","Ticker
+RELIANCE.NS    1415.61
+Name: 2024-03-19 00:00:00, dtype: float64",0.5,2,0.863
+2024-04-03,2024-04-08,"Ticker
+RELIANCE.NS    1461.64
+Name: 2024-04-03 00:00:00, dtype: float64","Ticker
+RELIANCE.NS    1475.92
+Name: 2024-04-08 00:00:00, dtype: float64",0.98,3,0.883
+2024-04-09,2024-04-16,"Ticker
+RELIANCE.NS    1453.75
+Name: 2024-04-09 00:00:00, dtype: float64","Ticker
+RELIANCE.NS    1455.83
+Name: 2024-04-16 00:00:00, dtype: float64",0.14,4,0.909
+2024-05-23,2024-05-29,"Ticker
+RELIANCE.NS    1476.0
+Name: 2024-05-23 00:00:00, dtype: float64","Ticker
+RELIANCE.NS    1431.03
+Name: 2024-05-29 00:00:00, dtype: float64",-3.05,4,0.958
+2024-06-04,2024-06-07,"Ticker
+RELIANCE.NS    1387.82
+Name: 2024-06-04 00:00:00, dtype: float64","Ticker
+RELIANCE.NS    1460.01
+Name: 2024-06-07 00:00:00, dtype: float64",5.2,3,0.974
+2024-06-07,2024-06-10,"Ticker
+RELIANCE.NS    1460.01
+Name: 2024-06-07 00:00:00, dtype: float64","Ticker
+RELIANCE.NS    1461.45
+Name: 2024-06-10 00:00:00, dtype: float64",0.1,1,0.795
+2024-06-27,2024-07-05,"Ticker
+RELIANCE.NS    1520.2
+Name: 2024-06-27 00:00:00, dtype: float64","Ticker
+RELIANCE.NS    1577.88
+Name: 2024-07-05 00:00:00, dtype: float64",3.79,6,0.995
+2024-07-05,2024-07-08,"Ticker
+RELIANCE.NS    1577.88
+Name: 2024-07-05 00:00:00, dtype: float64","Ticker
+RELIANCE.NS    1590.07
+Name: 2024-07-08 00:00:00, dtype: float64",0.77,1,0.927
+2024-07-22,2024-07-26,"Ticker
+RELIANCE.NS    1490.52
+Name: 2024-07-22 00:00:00, dtype: float64","Ticker
+RELIANCE.NS    1498.82
+Name: 2024-07-26 00:00:00, dtype: float64",0.56,4,0.951
+2024-08-09,2024-08-20,"Ticker
+RELIANCE.NS    1464.33
+Name: 2024-08-09 00:00:00, dtype: float64","Ticker
+RELIANCE.NS    1495.95
+Name: 2024-08-20 00:00:00, dtype: float64",2.16,6,0.976
+2024-08-20,2024-08-28,"Ticker
+RELIANCE.NS    1495.95
+Name: 2024-08-20 00:00:00, dtype: float64","Ticker
+RELIANCE.NS    1498.3
+Name: 2024-08-28 00:00:00, dtype: float64",0.16,6,0.965
+2024-08-28,2024-08-29,"Ticker
+RELIANCE.NS    1498.3
+Name: 2024-08-28 00:00:00, dtype: float64","Ticker
+RELIANCE.NS    1520.93
+Name: 2024-08-29 00:00:00, dtype: float64",1.51,1,0.921
+2024-09-18,2024-09-23,"Ticker
+RELIANCE.NS    1463.45
+Name: 2024-09-18 00:00:00, dtype: float64","Ticker
+RELIANCE.NS    1493.38
+Name: 2024-09-23 00:00:00, dtype: float64",2.04,3,0.896
+2024-11-13,2024-11-25,"Ticker
+RELIANCE.NS    1252.05
+Name: 2024-11-13 00:00:00, dtype: float64","Ticker
+RELIANCE.NS    1287.0
+Name: 2024-11-25 00:00:00, dtype: float64",2.79,6,0.941
+2024-11-25,2024-12-02,"Ticker
+RELIANCE.NS    1287.0
+Name: 2024-11-25 00:00:00, dtype: float64","Ticker
+RELIANCE.NS    1309.15
+Name: 2024-12-02 00:00:00, dtype: float64",1.72,5,0.951
+2025-01-02,2025-01-03,"Ticker
+RELIANCE.NS    1241.8
+Name: 2025-01-02 00:00:00, dtype: float64","Ticker
+RELIANCE.NS    1251.15
+Name: 2025-01-03 00:00:00, dtype: float64",0.75,1,0.773
+2025-01-09,2025-01-14,"Ticker
+RELIANCE.NS    1254.75
+Name: 2025-01-09 00:00:00, dtype: float64","Ticker
+RELIANCE.NS    1238.75
+Name: 2025-01-14 00:00:00, dtype: float64",-1.28,3,0.833
+2025-01-27,2025-02-03,"Ticker
+RELIANCE.NS    1229.35
+Name: 2025-01-27 00:00:00, dtype: float64","Ticker
+RELIANCE.NS    1245.9
+Name: 2025-02-03 00:00:00, dtype: float64",1.35,6,0.85
+2025-02-03,2025-02-04,"Ticker
+RELIANCE.NS    1245.9
+Name: 2025-02-03 00:00:00, dtype: float64","Ticker
+RELIANCE.NS    1285.2
+Name: 2025-02-04 00:00:00, dtype: float64",3.15,1,0.705
+2025-03-17,2025-03-24,"Ticker
+RELIANCE.NS    1238.85
+Name: 2025-03-17 00:00:00, dtype: float64","Ticker
+RELIANCE.NS    1302.1
+Name: 2025-03-24 00:00:00, dtype: float64",5.11,5,0.903

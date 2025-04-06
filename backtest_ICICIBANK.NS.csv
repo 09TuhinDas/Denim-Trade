@@ -1,0 +1,51 @@
+entry_date,exit_date,entry_price,exit_price,pnl_%,hold_days,max_confidence
+2023-12-05,2023-12-07,"Ticker
+ICICIBANK.NS    1004.8
+Name: 2023-12-05 00:00:00, dtype: float64","Ticker
+ICICIBANK.NS    990.47
+Name: 2023-12-07 00:00:00, dtype: float64",-1.43,2,0.923
+2024-04-30,2024-05-06,"Ticker
+ICICIBANK.NS    1140.58
+Name: 2024-04-30 00:00:00, dtype: float64","Ticker
+ICICIBANK.NS    1136.52
+Name: 2024-05-06 00:00:00, dtype: float64",-0.36,3,0.913
+2024-05-09,2024-05-13,"Ticker
+ICICIBANK.NS    1106.18
+Name: 2024-05-09 00:00:00, dtype: float64","Ticker
+ICICIBANK.NS    1118.37
+Name: 2024-05-13 00:00:00, dtype: float64",1.1,2,0.847
+2024-05-14,2024-05-15,"Ticker
+ICICIBANK.NS    1110.99
+Name: 2024-05-14 00:00:00, dtype: float64","Ticker
+ICICIBANK.NS    1114.75
+Name: 2024-05-15 00:00:00, dtype: float64",0.34,1,0.747
+2024-06-25,2024-06-27,"Ticker
+ICICIBANK.NS    1187.73
+Name: 2024-06-25 00:00:00, dtype: float64","Ticker
+ICICIBANK.NS    1209.49
+Name: 2024-06-27 00:00:00, dtype: float64",1.83,2,0.943
+2024-09-25,2024-09-27,"Ticker
+ICICIBANK.NS    1323.85
+Name: 2024-09-25 00:00:00, dtype: float64","Ticker
+ICICIBANK.NS    1306.6
+Name: 2024-09-27 00:00:00, dtype: float64",-1.3,2,0.854
+2024-10-22,2024-10-24,"Ticker
+ICICIBANK.NS    1267.5
+Name: 2024-10-22 00:00:00, dtype: float64","Ticker
+ICICIBANK.NS    1252.75
+Name: 2024-10-24 00:00:00, dtype: float64",-1.16,2,0.792
+2024-11-04,2024-11-05,"Ticker
+ICICIBANK.NS    1277.2
+Name: 2024-11-04 00:00:00, dtype: float64","Ticker
+ICICIBANK.NS    1296.7
+Name: 2024-11-05 00:00:00, dtype: float64",1.53,1,0.766
+2024-11-07,2024-11-08,"Ticker
+ICICIBANK.NS    1278.7
+Name: 2024-11-07 00:00:00, dtype: float64","Ticker
+ICICIBANK.NS    1258.85
+Name: 2024-11-08 00:00:00, dtype: float64",-1.55,1,0.766
+2025-02-06,2025-02-11,"Ticker
+ICICIBANK.NS    1272.4
+Name: 2025-02-06 00:00:00, dtype: float64","Ticker
+ICICIBANK.NS    1252.75
+Name: 2025-02-11 00:00:00, dtype: float64",-1.54,3,0.817

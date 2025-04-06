@@ -1,0 +1,21 @@
+entry_date,exit_date,entry_price,exit_price,pnl_%,hold_days,max_confidence
+2023-11-03,2023-11-06,"Ticker
+SBIN.NS    568.61
+Name: 2023-11-03 00:00:00, dtype: float64","Ticker
+SBIN.NS    564.88
+Name: 2023-11-06 00:00:00, dtype: float64",-0.66,1,0.826
+2024-06-04,2024-06-05,"Ticker
+SBIN.NS    775.2
+Name: 2024-06-04 00:00:00, dtype: float64","Ticker
+SBIN.NS    789.75
+Name: 2024-06-05 00:00:00, dtype: float64",1.88,1,0.778
+2024-08-28,2024-08-29,"Ticker
+SBIN.NS    809.4
+Name: 2024-08-28 00:00:00, dtype: float64","Ticker
+SBIN.NS    814.5
+Name: 2024-08-29 00:00:00, dtype: float64",0.63,1,0.764
+2024-11-12,2024-11-18,"Ticker
+SBIN.NS    826.7
+Name: 2024-11-12 00:00:00, dtype: float64","Ticker
+SBIN.NS    814.3
+Name: 2024-11-18 00:00:00, dtype: float64",-1.5,3,0.84

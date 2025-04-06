@@ -1,0 +1,61 @@
+entry_date,exit_date,entry_price,exit_price,pnl_%,hold_days,max_confidence
+2023-09-06,2023-09-07,"Ticker
+AXISBANK.NS    964.31
+Name: 2023-09-06 00:00:00, dtype: float64","Ticker
+AXISBANK.NS    977.45
+Name: 2023-09-07 00:00:00, dtype: float64",1.36,1,0.737
+2023-11-17,2023-11-23,"Ticker
+AXISBANK.NS    993.58
+Name: 2023-11-17 00:00:00, dtype: float64","Ticker
+AXISBANK.NS    998.28
+Name: 2023-11-23 00:00:00, dtype: float64",0.47,4,0.887
+2023-12-01,2023-12-04,"Ticker
+AXISBANK.NS    1103.8
+Name: 2023-12-01 00:00:00, dtype: float64","Ticker
+AXISBANK.NS    1124.73
+Name: 2023-12-04 00:00:00, dtype: float64",1.9,1,0.834
+2024-01-29,2024-01-31,"Ticker
+AXISBANK.NS    1060.43
+Name: 2024-01-29 00:00:00, dtype: float64","Ticker
+AXISBANK.NS    1066.93
+Name: 2024-01-31 00:00:00, dtype: float64",0.61,2,0.714
+2024-04-01,2024-04-08,"Ticker
+AXISBANK.NS    1052.29
+Name: 2024-04-01 00:00:00, dtype: float64","Ticker
+AXISBANK.NS    1075.22
+Name: 2024-04-08 00:00:00, dtype: float64",2.18,5,0.909
+2024-04-26,2024-04-30,"Ticker
+AXISBANK.NS    1129.43
+Name: 2024-04-26 00:00:00, dtype: float64","Ticker
+AXISBANK.NS    1165.0
+Name: 2024-04-30 00:00:00, dtype: float64",3.15,2,0.925
+2024-06-06,2024-06-11,"Ticker
+AXISBANK.NS    1170.05
+Name: 2024-06-06 00:00:00, dtype: float64","Ticker
+AXISBANK.NS    1193.68
+Name: 2024-06-11 00:00:00, dtype: float64",2.02,3,0.797
+2024-06-26,2024-06-28,"Ticker
+AXISBANK.NS    1284.41
+Name: 2024-06-26 00:00:00, dtype: float64","Ticker
+AXISBANK.NS    1264.27
+Name: 2024-06-28 00:00:00, dtype: float64",-1.57,2,0.861
+2024-09-18,2024-09-25,"Ticker
+AXISBANK.NS    1240.45
+Name: 2024-09-18 00:00:00, dtype: float64","Ticker
+AXISBANK.NS    1268.1
+Name: 2024-09-25 00:00:00, dtype: float64",2.23,5,0.921
+2024-10-25,2024-10-28,"Ticker
+AXISBANK.NS    1189.35
+Name: 2024-10-25 00:00:00, dtype: float64","Ticker
+AXISBANK.NS    1171.6
+Name: 2024-10-28 00:00:00, dtype: float64",-1.49,1,0.794
+2025-02-11,2025-02-19,"Ticker
+AXISBANK.NS    1007.4
+Name: 2025-02-11 00:00:00, dtype: float64","Ticker
+AXISBANK.NS    1011.35
+Name: 2025-02-19 00:00:00, dtype: float64",0.39,6,0.833
+2025-03-24,2025-03-26,"Ticker
+AXISBANK.NS    1097.85
+Name: 2025-03-24 00:00:00, dtype: float64","Ticker
+AXISBANK.NS    1096.25
+Name: 2025-03-26 00:00:00, dtype: float64",-0.15,2,0.923

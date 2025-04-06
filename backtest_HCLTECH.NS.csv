@@ -1,0 +1,86 @@
+entry_date,exit_date,entry_price,exit_price,pnl_%,hold_days,max_confidence
+2023-06-09,2023-06-12,"Ticker
+HCLTECH.NS    1045.11
+Name: 2023-06-09 00:00:00, dtype: float64","Ticker
+HCLTECH.NS    1073.27
+Name: 2023-06-12 00:00:00, dtype: float64",2.69,1,0.82
+2023-07-21,2023-07-25,"Ticker
+HCLTECH.NS    1059.54
+Name: 2023-07-21 00:00:00, dtype: float64","Ticker
+HCLTECH.NS    1055.84
+Name: 2023-07-25 00:00:00, dtype: float64",-0.35,2,0.921
+2023-08-25,2023-08-30,"Ticker
+HCLTECH.NS    1096.11
+Name: 2023-08-25 00:00:00, dtype: float64","Ticker
+HCLTECH.NS    1111.83
+Name: 2023-08-30 00:00:00, dtype: float64",1.43,3,0.843
+2023-09-06,2023-09-08,"Ticker
+HCLTECH.NS    1173.91
+Name: 2023-09-06 00:00:00, dtype: float64","Ticker
+HCLTECH.NS    1198.8
+Name: 2023-09-08 00:00:00, dtype: float64",2.12,2,0.932
+2024-04-01,2024-04-09,"Ticker
+HCLTECH.NS    1504.33
+Name: 2024-04-01 00:00:00, dtype: float64","Ticker
+HCLTECH.NS    1488.67
+Name: 2024-04-09 00:00:00, dtype: float64",-1.04,6,0.881
+2024-04-09,2024-04-19,"Ticker
+HCLTECH.NS    1488.67
+Name: 2024-04-09 00:00:00, dtype: float64","Ticker
+HCLTECH.NS    1398.8
+Name: 2024-04-19 00:00:00, dtype: float64",-6.04,6,0.966
+2024-04-19,2024-04-29,"Ticker
+HCLTECH.NS    1398.8
+Name: 2024-04-19 00:00:00, dtype: float64","Ticker
+HCLTECH.NS    1340.72
+Name: 2024-04-29 00:00:00, dtype: float64",-4.15,6,0.985
+2024-04-29,2024-04-30,"Ticker
+HCLTECH.NS    1340.72
+Name: 2024-04-29 00:00:00, dtype: float64","Ticker
+HCLTECH.NS    1320.62
+Name: 2024-04-30 00:00:00, dtype: float64",-1.5,1,0.97
+2024-07-08,2024-07-10,"Ticker
+HCLTECH.NS    1501.71
+Name: 2024-07-08 00:00:00, dtype: float64","Ticker
+HCLTECH.NS    1478.74
+Name: 2024-07-10 00:00:00, dtype: float64",-1.53,2,0.903
+2024-07-12,2024-07-22,"Ticker
+HCLTECH.NS    1527.95
+Name: 2024-07-12 00:00:00, dtype: float64","Ticker
+HCLTECH.NS    1544.5
+Name: 2024-07-22 00:00:00, dtype: float64",1.08,5,0.985
+2024-09-04,2024-09-06,"Ticker
+HCLTECH.NS    1761.75
+Name: 2024-09-04 00:00:00, dtype: float64","Ticker
+HCLTECH.NS    1732.99
+Name: 2024-09-06 00:00:00, dtype: float64",-1.63,2,0.773
+2025-01-15,2025-01-20,"Ticker
+HCLTECH.NS    1813.48
+Name: 2025-01-15 00:00:00, dtype: float64","Ticker
+HCLTECH.NS    1796.2
+Name: 2025-01-20 00:00:00, dtype: float64",-0.95,3,0.927
+2025-02-07,2025-02-17,"Ticker
+HCLTECH.NS    1725.65
+Name: 2025-02-07 00:00:00, dtype: float64","Ticker
+HCLTECH.NS    1709.9
+Name: 2025-02-17 00:00:00, dtype: float64",-0.91,6,0.894
+2025-02-18,2025-02-20,"Ticker
+HCLTECH.NS    1725.5
+Name: 2025-02-18 00:00:00, dtype: float64","Ticker
+HCLTECH.NS    1687.55
+Name: 2025-02-20 00:00:00, dtype: float64",-2.2,2,0.815
+2025-02-21,2025-02-24,"Ticker
+HCLTECH.NS    1700.7
+Name: 2025-02-21 00:00:00, dtype: float64","Ticker
+HCLTECH.NS    1644.05
+Name: 2025-02-24 00:00:00, dtype: float64",-3.33,1,0.705
+2025-02-28,2025-03-04,"Ticker
+HCLTECH.NS    1575.05
+Name: 2025-02-28 00:00:00, dtype: float64","Ticker
+HCLTECH.NS    1535.5
+Name: 2025-03-04 00:00:00, dtype: float64",-2.51,2,0.935
+2025-03-21,2025-03-26,"Ticker
+HCLTECH.NS    1566.7
+Name: 2025-03-21 00:00:00, dtype: float64","Ticker
+HCLTECH.NS    1633.4
+Name: 2025-03-26 00:00:00, dtype: float64",4.26,3,0.962

@@ -1,0 +1,251 @@
+entry_date,exit_date,entry_price,exit_price,pnl_%,hold_days,max_confidence
+2023-05-30,2023-06-05,"Ticker
+LT.NS    2154.36
+Name: 2023-05-30 00:00:00, dtype: float64","Ticker
+LT.NS    2210.39
+Name: 2023-06-05 00:00:00, dtype: float64",2.6,4,0.994
+2023-06-08,2023-06-16,"Ticker
+LT.NS    2280.55
+Name: 2023-06-08 00:00:00, dtype: float64","Ticker
+LT.NS    2306.37
+Name: 2023-06-16 00:00:00, dtype: float64",1.13,6,0.84
+2023-06-30,2023-07-07,"Ticker
+LT.NS    2412.35
+Name: 2023-06-30 00:00:00, dtype: float64","Ticker
+LT.NS    2386.82
+Name: 2023-07-07 00:00:00, dtype: float64",-1.06,5,0.853
+2023-07-24,2023-08-01,"Ticker
+LT.NS    2538.74
+Name: 2023-07-24 00:00:00, dtype: float64","Ticker
+LT.NS    2622.04
+Name: 2023-08-01 00:00:00, dtype: float64",3.28,6,0.902
+2023-08-01,2023-08-04,"Ticker
+LT.NS    2622.04
+Name: 2023-08-01 00:00:00, dtype: float64","Ticker
+LT.NS    2606.41
+Name: 2023-08-04 00:00:00, dtype: float64",-0.6,3,0.906
+2023-09-08,2023-09-18,"Ticker
+LT.NS    2878.97
+Name: 2023-09-08 00:00:00, dtype: float64","Ticker
+LT.NS    2897.08
+Name: 2023-09-18 00:00:00, dtype: float64",0.63,6,0.902
+2023-09-18,2023-09-20,"Ticker
+LT.NS    2897.08
+Name: 2023-09-18 00:00:00, dtype: float64","Ticker
+LT.NS    2867.46
+Name: 2023-09-20 00:00:00, dtype: float64",-1.02,1,0.869
+2023-10-03,2023-10-10,"Ticker
+LT.NS    3049.28
+Name: 2023-10-03 00:00:00, dtype: float64","Ticker
+LT.NS    3052.01
+Name: 2023-10-10 00:00:00, dtype: float64",0.09,5,0.948
+2023-10-25,2023-11-02,"Ticker
+LT.NS    2893.36
+Name: 2023-10-25 00:00:00, dtype: float64","Ticker
+LT.NS    2895.34
+Name: 2023-11-02 00:00:00, dtype: float64",0.07,6,0.997
+2023-11-02,2023-11-08,"Ticker
+LT.NS    2895.34
+Name: 2023-11-02 00:00:00, dtype: float64","Ticker
+LT.NS    2973.08
+Name: 2023-11-08 00:00:00, dtype: float64",2.68,4,0.81
+2023-11-13,2023-11-22,"Ticker
+LT.NS    3024.72
+Name: 2023-11-13 00:00:00, dtype: float64","Ticker
+LT.NS    3058.26
+Name: 2023-11-22 00:00:00, dtype: float64",1.11,6,0.961
+2023-11-28,2023-11-30,"Ticker
+LT.NS    3026.21
+Name: 2023-11-28 00:00:00, dtype: float64","Ticker
+LT.NS    3084.95
+Name: 2023-11-30 00:00:00, dtype: float64",1.94,2,0.709
+2023-12-01,2023-12-06,"Ticker
+LT.NS    3165.76
+Name: 2023-12-01 00:00:00, dtype: float64","Ticker
+LT.NS    3365.84
+Name: 2023-12-06 00:00:00, dtype: float64",6.32,3,0.802
+2023-12-08,2023-12-18,"Ticker
+LT.NS    3352.1
+Name: 2023-12-08 00:00:00, dtype: float64","Ticker
+LT.NS    3464.37
+Name: 2023-12-18 00:00:00, dtype: float64",3.35,6,0.869
+2023-12-18,2023-12-21,"Ticker
+LT.NS    3464.37
+Name: 2023-12-18 00:00:00, dtype: float64","Ticker
+LT.NS    3397.44
+Name: 2023-12-21 00:00:00, dtype: float64",-1.93,3,0.869
+2024-02-01,2024-02-09,"Ticker
+LT.NS    3371.5
+Name: 2024-02-01 00:00:00, dtype: float64","Ticker
+LT.NS    3298.62
+Name: 2024-02-09 00:00:00, dtype: float64",-2.16,6,0.997
+2024-02-09,2024-02-19,"Ticker
+LT.NS    3298.62
+Name: 2024-02-09 00:00:00, dtype: float64","Ticker
+LT.NS    3313.8
+Name: 2024-02-19 00:00:00, dtype: float64",0.46,6,0.897
+2024-02-21,2024-02-23,"Ticker
+LT.NS    3270.69
+Name: 2024-02-21 00:00:00, dtype: float64","Ticker
+LT.NS    3361.53
+Name: 2024-02-23 00:00:00, dtype: float64",2.78,2,0.892
+2024-02-29,2024-03-01,"Ticker
+LT.NS    3450.43
+Name: 2024-02-29 00:00:00, dtype: float64","Ticker
+LT.NS    3605.16
+Name: 2024-03-01 00:00:00, dtype: float64",4.48,1,0.924
+2024-03-01,2024-03-05,"Ticker
+LT.NS    3605.16
+Name: 2024-03-01 00:00:00, dtype: float64","Ticker
+LT.NS    3584.42
+Name: 2024-03-05 00:00:00, dtype: float64",-0.58,2,0.924
+2024-03-18,2024-03-19,"Ticker
+LT.NS    3533.42
+Name: 2024-03-18 00:00:00, dtype: float64","Ticker
+LT.NS    3474.39
+Name: 2024-03-19 00:00:00, dtype: float64",-1.67,1,0.771
+2024-03-27,2024-04-05,"Ticker
+LT.NS    3677.49
+Name: 2024-03-27 00:00:00, dtype: float64","Ticker
+LT.NS    3713.91
+Name: 2024-04-05 00:00:00, dtype: float64",0.99,6,0.908
+2024-04-09,2024-04-10,"Ticker
+LT.NS    3755.73
+Name: 2024-04-09 00:00:00, dtype: float64","Ticker
+LT.NS    3723.93
+Name: 2024-04-10 00:00:00, dtype: float64",-0.85,1,0.772
+2024-04-16,2024-04-22,"Ticker
+LT.NS    3515.81
+Name: 2024-04-16 00:00:00, dtype: float64","Ticker
+LT.NS    3584.52
+Name: 2024-04-22 00:00:00, dtype: float64",1.95,3,0.992
+2024-05-03,2024-05-13,"Ticker
+LT.NS    3472.5
+Name: 2024-05-03 00:00:00, dtype: float64","Ticker
+LT.NS    3268.16
+Name: 2024-05-13 00:00:00, dtype: float64",-5.88,6,0.987
+2024-05-14,2024-05-16,"Ticker
+LT.NS    3353.09
+Name: 2024-05-14 00:00:00, dtype: float64","Ticker
+LT.NS    3433.61
+Name: 2024-05-16 00:00:00, dtype: float64",2.4,2,0.836
+2024-05-17,2024-05-23,"Ticker
+LT.NS    3423.84
+Name: 2024-05-17 00:00:00, dtype: float64","Ticker
+LT.NS    3557.44
+Name: 2024-05-23 00:00:00, dtype: float64",3.9,3,0.909
+2024-06-04,2024-06-05,"Ticker
+LT.NS    3376.66
+Name: 2024-06-04 00:00:00, dtype: float64","Ticker
+LT.NS    3382.41
+Name: 2024-06-05 00:00:00, dtype: float64",0.17,1,0.813
+2024-06-13,2024-06-21,"Ticker
+LT.NS    3674.76
+Name: 2024-06-13 00:00:00, dtype: float64","Ticker
+LT.NS    3535.0
+Name: 2024-06-21 00:00:00, dtype: float64",-3.8,5,0.919
+2024-07-31,2024-08-06,"Ticker
+LT.NS    3815.0
+Name: 2024-07-31 00:00:00, dtype: float64","Ticker
+LT.NS    3576.2
+Name: 2024-08-06 00:00:00, dtype: float64",-6.26,4,0.896
+2024-08-27,2024-08-30,"Ticker
+LT.NS    3702.7
+Name: 2024-08-27 00:00:00, dtype: float64","Ticker
+LT.NS    3704.65
+Name: 2024-08-30 00:00:00, dtype: float64",0.05,3,0.874
+2024-09-24,2024-09-30,"Ticker
+LT.NS    3791.6
+Name: 2024-09-24 00:00:00, dtype: float64","Ticker
+LT.NS    3675.55
+Name: 2024-09-30 00:00:00, dtype: float64",-3.06,4,0.912
+2024-10-08,2024-10-10,"Ticker
+LT.NS    3532.4
+Name: 2024-10-08 00:00:00, dtype: float64","Ticker
+LT.NS    3460.35
+Name: 2024-10-10 00:00:00, dtype: float64",-2.04,2,0.813
+2024-10-22,2024-10-24,"Ticker
+LT.NS    3511.9
+Name: 2024-10-22 00:00:00, dtype: float64","Ticker
+LT.NS    3442.65
+Name: 2024-10-24 00:00:00, dtype: float64",-1.97,2,0.94
+2024-10-25,2024-10-31,"Ticker
+LT.NS    3326.4
+Name: 2024-10-25 00:00:00, dtype: float64","Ticker
+LT.NS    3622.3
+Name: 2024-10-31 00:00:00, dtype: float64",8.9,4,0.89
+2024-11-04,2024-11-12,"Ticker
+LT.NS    3574.45
+Name: 2024-11-04 00:00:00, dtype: float64","Ticker
+LT.NS    3591.35
+Name: 2024-11-12 00:00:00, dtype: float64",0.47,6,0.931
+2024-11-12,2024-11-18,"Ticker
+LT.NS    3591.35
+Name: 2024-11-12 00:00:00, dtype: float64","Ticker
+LT.NS    3542.15
+Name: 2024-11-18 00:00:00, dtype: float64",-1.37,3,0.862
+2024-11-25,2024-12-03,"Ticker
+LT.NS    3753.0
+Name: 2024-11-25 00:00:00, dtype: float64","Ticker
+LT.NS    3787.05
+Name: 2024-12-03 00:00:00, dtype: float64",0.91,6,0.903
+2024-12-03,2024-12-09,"Ticker
+LT.NS    3787.05
+Name: 2024-12-03 00:00:00, dtype: float64","Ticker
+LT.NS    3947.3
+Name: 2024-12-09 00:00:00, dtype: float64",4.23,4,0.91
+2024-12-20,2024-12-31,"Ticker
+LT.NS    3629.85
+Name: 2024-12-20 00:00:00, dtype: float64","Ticker
+LT.NS    3607.65
+Name: 2024-12-31 00:00:00, dtype: float64",-0.61,6,0.948
+2025-01-08,2025-01-16,"Ticker
+LT.NS    3596.35
+Name: 2025-01-08 00:00:00, dtype: float64","Ticker
+LT.NS    3507.9
+Name: 2025-01-16 00:00:00, dtype: float64",-2.46,6,0.868
+2025-01-16,2025-01-17,"Ticker
+LT.NS    3507.9
+Name: 2025-01-16 00:00:00, dtype: float64","Ticker
+LT.NS    3568.65
+Name: 2025-01-17 00:00:00, dtype: float64",1.73,1,0.796
+2025-01-28,2025-01-31,"Ticker
+LT.NS    3413.9
+Name: 2025-01-28 00:00:00, dtype: float64","Ticker
+LT.NS    3567.4
+Name: 2025-01-31 00:00:00, dtype: float64",4.5,3,0.843
+2025-02-06,2025-02-14,"Ticker
+LT.NS    3352.75
+Name: 2025-02-06 00:00:00, dtype: float64","Ticker
+LT.NS    3237.65
+Name: 2025-02-14 00:00:00, dtype: float64",-3.43,6,0.917
+2025-02-14,2025-02-24,"Ticker
+LT.NS    3237.65
+Name: 2025-02-14 00:00:00, dtype: float64","Ticker
+LT.NS    3257.7
+Name: 2025-02-24 00:00:00, dtype: float64",0.62,6,0.992
+2025-02-24,2025-03-05,"Ticker
+LT.NS    3257.7
+Name: 2025-02-24 00:00:00, dtype: float64","Ticker
+LT.NS    3239.65
+Name: 2025-03-05 00:00:00, dtype: float64",-0.55,6,0.992
+2025-03-05,2025-03-13,"Ticker
+LT.NS    3239.65
+Name: 2025-03-05 00:00:00, dtype: float64","Ticker
+LT.NS    3187.3
+Name: 2025-03-13 00:00:00, dtype: float64",-1.62,6,0.988
+2025-03-13,2025-03-19,"Ticker
+LT.NS    3187.3
+Name: 2025-03-13 00:00:00, dtype: float64","Ticker
+LT.NS    3319.55
+Name: 2025-03-19 00:00:00, dtype: float64",4.15,3,0.915
+2025-03-19,2025-03-24,"Ticker
+LT.NS    3319.55
+Name: 2025-03-19 00:00:00, dtype: float64","Ticker
+LT.NS    3481.85
+Name: 2025-03-24 00:00:00, dtype: float64",4.89,3,0.757
+2025-03-24,2025-04-02,"Ticker
+LT.NS    3481.85
+Name: 2025-03-24 00:00:00, dtype: float64","Ticker
+LT.NS    3419.9
+Name: 2025-04-02 00:00:00, dtype: float64",-1.78,6,0.79
