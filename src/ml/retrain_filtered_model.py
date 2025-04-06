@@ -21,9 +21,9 @@ def load_batches(tickers_filter):
             try:
                 batch = joblib.load(os.path.join(RAW_DATA_FOLDER, file))
                 X, y = batch["X"], batch["y"]
-                mask = X["ticker"].isin(tickers_filter)
-                X_filtered = X[mask].drop(columns=["ticker"], errors="ignore")
-                y_filtered = y[mask]
+                X["mask"] = X["ticker"].isin(tickers_filter)
+                X_filtered = X[X["mask"]].drop(columns=["ticker", "mask"], errors="ignore")
+                y_filtered = y[X["mask"].values]  # align using boolean array
                 X_total.append(X_filtered)
                 y_total.append(y_filtered)
             except Exception as e:

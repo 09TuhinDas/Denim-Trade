@@ -44,4 +44,8 @@ def add_indicators(df):
     # ROC
     df['roc'] = ta.momentum.ROCIndicator(close).roc()
 
+    df.columns = [col[0].strip() if isinstance(col, tuple) else str(col).strip() for col in df.columns]
+
+
+
     return df
