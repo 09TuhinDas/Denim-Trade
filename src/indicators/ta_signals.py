@@ -1,15 +1,16 @@
 import pandas as pd
 import ta
 
-
 def add_indicators(df):
     df = df.copy()
 
-    # Flatten all series to 1D
-    close = df['Close'].squeeze()
-    high = df['High'].squeeze()
-    low = df['Low'].squeeze()
-    volume = df['Volume'].squeeze()
+    # Ensure all column names are lowercase
+    df.columns = [col.lower() for col in df.columns]
+
+    close = df['close'].squeeze()
+    high = df['high'].squeeze()
+    low = df['low'].squeeze()
+    volume = df['volume'].squeeze()
 
     # RSI
     df['rsi'] = ta.momentum.RSIIndicator(close).rsi()
@@ -18,7 +19,7 @@ def add_indicators(df):
     macd = ta.trend.MACD(close)
     df['macd'] = macd.macd_diff()
 
-    # EMA (20)
+    # EMA (10 & 20)
     df['ema20'] = ta.trend.EMAIndicator(close, window=20).ema_indicator()
     df['ema10'] = ta.trend.EMAIndicator(close, window=10).ema_indicator()
     df['ema_crossover'] = (df['ema10'] > df['ema20']).astype(int)
@@ -43,9 +44,5 @@ def add_indicators(df):
 
     # ROC
     df['roc'] = ta.momentum.ROCIndicator(close).roc()
-
-    df.columns = [col[0].strip() if isinstance(col, tuple) else str(col).strip() for col in df.columns]
-
-
 
     return df

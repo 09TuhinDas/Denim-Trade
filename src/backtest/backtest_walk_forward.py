@@ -1,13 +1,14 @@
 
-# src/backtest/backtest_walk_forward.py
-
 import os
 import joblib
 import pandas as pd
 import yfinance as yf
-from datetime import datetime, timedelta
+from datetime import datetime
 from src.indicators.ta_signals import add_indicators
-from src.config import FEATURE_COLS, MODEL_PATH, HOLD_DAYS, PROFIT_TARGET, CONFIDENCE_THRESHOLD
+from src.config import (
+    FEATURE_COLS, MODEL_PATH, HOLD_DAYS, PROFIT_TARGET,
+    CONFIDENCE_THRESHOLD, CIRCUIT_BREAKER_ENABLED, MAX_CONSECUTIVE_LOSSES
+)
 
 def simulate_trade(entry_price, future_prices, profit=PROFIT_TARGET, hold_days=HOLD_DAYS):
     for i, price in enumerate(future_prices[1:hold_days+1]):
@@ -22,15 +23,22 @@ def simulate_trade(entry_price, future_prices, profit=PROFIT_TARGET, hold_days=H
 def backtest_ticker(ticker, model, window=14):
     try:
         df = yf.download(ticker, period="1y", progress=False)
-        df = add_indicators(df).dropna()
-        df.columns = [col[0] if isinstance(col, tuple) else col for col in df.columns]
+        df.columns = [col.lower() if isinstance(col, str) else col[0].lower() for col in df.columns]
+        df = add_indicators(df)
+        df = df.dropna()
         df = df.reset_index()
     except Exception as e:
         print(f"⚠️ {ticker}: {e}")
         return []
 
     results = []
+    loss_streak = 0
+
     for i in range(len(df) - window - HOLD_DAYS):
+        if CIRCUIT_BREAKER_ENABLED and loss_streak >= MAX_CONSECUTIVE_LOSSES:
+            print(f"🚫 Circuit breaker triggered for {ticker} after {MAX_CONSECUTIVE_LOSSES} consecutive losses.")
+            break
+
         train = df.iloc[i:i+window]
         test = df.iloc[i+window:i+window+1]
         if test.empty:
@@ -41,10 +49,16 @@ def backtest_ticker(ticker, model, window=14):
         confidence = model.predict_proba(latest)[0][1]
 
         if confidence >= CONFIDENCE_THRESHOLD:
-            entry_price = test['Close'].values[0]
-            date = test['Date'].values[0]
-            future_prices = df['Close'].iloc[i+window:i+window+HOLD_DAYS+1].values
+            entry_price = test['close'].values[0]
+            date = test['Date'].values[0] if 'Date' in test.columns else test.index[i+window]
+            future_prices = df['close'].iloc[i+window:i+window+HOLD_DAYS+1].values
             ret, days_held, exit_reason = simulate_trade(entry_price, future_prices)
+
+            if ret < 0:
+                loss_streak += 1
+            else:
+                loss_streak = 0
+
             results.append({
                 "ticker": ticker,
                 "date": str(date),

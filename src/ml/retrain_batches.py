@@ -1,3 +1,4 @@
+
 import os
 import json
 import time
@@ -7,16 +8,8 @@ import pandas as pd
 from tqdm import tqdm
 from datetime import datetime
 from src.indicators.ta_signals import add_indicators
+from src.utils.labeling import compute_swing_label_v2
 from src.config import FEATURE_COLS, BATCH_SIZE, PROCESSED_LOG_PATH, RAW_DATA_FOLDER
-
-def get_swing_label(prices, profit=0.03, stop=0.02, window=5):
-    for i in range(1, window + 1):
-        change = (prices[i] - prices[0]) / prices[0]
-        if change >= profit:
-            return 1
-        elif change <= -stop:
-            return 0
-    return None
 
 def load_all_tickers():
     df = pd.read_csv("data/nse_equity_list.csv")
@@ -35,25 +28,23 @@ def save_processed_tickers(tickers):
 def fetch_and_process(ticker):
     try:
         df = yf.download(ticker, period="2y", progress=False)
+        df.columns = [col.lower() if isinstance(col, str) else col[0].lower() for col in df.columns]
         df.columns = [col[0] if isinstance(col, tuple) else col for col in df.columns]
         df = add_indicators(df).dropna()
 
-        X, y = [], []
-        for i in range(len(df) - 5):
-            future = df['Close'].iloc[i:i+6].values
-            label = get_swing_label(future)
-            if label is None:
-                continue
-            row = df[FEATURE_COLS].iloc[i].copy()
-            row["ticker"] = ticker  # ✅ add the ticker name
-            X.append(row)
-            y.append(label)
+        # Apply enhanced labeling logic
+        df = compute_swing_label_v2(df, profit_target=0.03, stop_loss=0.02, hold_days=5)
+        df["ticker"] = ticker
+        df = df.dropna(subset=["label"])
 
-        X = pd.DataFrame(X)
-        y = pd.Series(y)
-
-        if len(X) < 50:
+        if len(df) < 50:
             return None, None
+
+        # Build features and target
+        X = df[FEATURE_COLS + ["ticker"]].copy()
+        X["volatility"] = df["volatility"]
+        X["kelly_fraction"] = df["kelly_fraction"]
+        y = df["label"]
 
         return X, y
 
@@ -88,9 +79,14 @@ def main():
         processed.add(ticker)
 
         if len(batch) >= BATCH_SIZE:
+            combined_X = pd.concat([item["X"] for item in batch])
+            combined_y = pd.concat([item["y"] for item in batch])
+            combined_tickers = combined_X["ticker"].tolist()
+
             batch_data = {
-                "X": pd.concat([item["X"] for item in batch]),
-                "y": pd.concat([item["y"] for item in batch])
+                "X": combined_X.drop(columns=["ticker"]),
+                "y": combined_y,
+                "tickers": combined_tickers
             }
             save_batch_atomically(batch_data)
             batch = []
@@ -99,9 +95,14 @@ def main():
         time.sleep(1.2)  # avoid rate limits
 
     if batch:
+        combined_X = pd.concat([item["X"] for item in batch])
+        combined_y = pd.concat([item["y"] for item in batch])
+        combined_tickers = combined_X["ticker"].tolist()
+
         batch_data = {
-            "X": pd.concat([item["X"] for item in batch]),
-            "y": pd.concat([item["y"] for item in batch])
+            "X": combined_X.drop(columns=["ticker"]),
+            "y": combined_y,
+            "tickers": combined_tickers
         }
         save_batch_atomically(batch_data)
         save_processed_tickers(processed)
