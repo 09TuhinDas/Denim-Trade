@@ -1,63 +1,42 @@
-import time
-import random
-import pandas as pd
-import joblib
-from tqdm import tqdm
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report
-from xgboost import XGBClassifier
+import os
+import subprocess
+from datetime import datetime
+from drift_monitor import compute_drift_scores, load_combined_training_data, load_live_data
 
-from src.config import TICKERS, FEATURE_COLS, MODEL_PATH, HOLD_DAYS
-from src.indicators.ta_signals import add_indicators
-from src.utils.data_fetcher import fetch_stock_data
+DRIFT_THRESHOLD = 0.3
+RETRAIN_COMMAND = "python retrain_xgboost.py"
+RETRAIN_LOG = "logs/retrain_log.txt"
 
-X_all, y_all = [], []
 
-print("\n📅 Starting scheduled retraining...")
-for ticker in tqdm(TICKERS[:100]):  # limit for test; remove [:100] for full market
-    try:
-        df = fetch_stock_data(ticker, period="1y")
-        if df is None or df.empty:
-            continue
+def should_retrain():
+    print("\n📊 Checking for retraining trigger...")
+    train_df = load_combined_training_data()
+    live_df = load_live_data()
+    drift_scores = compute_drift_scores(train_df, live_df)
 
-        df = add_indicators(df).dropna()
+    max_drift = max([
+        float(score) for score in drift_scores.values()
+        if isinstance(score, float)
+    ], default=0.0)
 
-        df['future_close'] = df['Close'].shift(-HOLD_DAYS)
-        df['target'] = (df['future_close'] > df['Close']).astype(int)
-        df.dropna(inplace=True)
+    print(f"Max drift detected: {max_drift:.4f}")
+    return max_drift > DRIFT_THRESHOLD
 
-        if not all(col in df.columns for col in FEATURE_COLS + ['Close', 'future_close']):
-            print(f"⚠️ Error processing {ticker}: Missing columns")
-            continue
 
-        X = df[FEATURE_COLS].copy()
-        X.columns = X.columns.str.strip()
-        y = df['target']
+def trigger_retrain():
+    print("\n🔁 Drift threshold exceeded. Triggering retraining...")
+    os.makedirs("logs", exist_ok=True)
+    with open(RETRAIN_LOG, "a") as f:
+        f.write(f"[{datetime.now()}] Retraining triggered due to drift.\n")
+    subprocess.run(RETRAIN_COMMAND, shell=True)
 
-        X_all.append(X)
-        y_all.append(y)
 
-        time.sleep(random.uniform(0.5, 1.5))  # avoid rate-limiting
+def main():
+    if should_retrain():
+        trigger_retrain()
+    else:
+        print("✅ No retraining needed. Drift within acceptable range.")
 
-    except Exception as e:
-        print(f"⚠️ Error processing {ticker}: {e}")
 
-if not X_all:
-    print("❌ No data available for training.")
-    exit()
-
-X_final = pd.concat(X_all)
-y_final = pd.concat(y_all)
-
-print("\n🧠 Training refined XGBoost model...")
-X_train, X_test, y_train, y_test = train_test_split(X_final, y_final, test_size=0.3, random_state=42)
-
-model = XGBClassifier()
-model.fit(X_train, y_train)
-
-preds = model.predict(X_test)
-print("\n📊 Evaluation Report:\n")
-print(classification_report(y_test, preds))
-
-joblib.dump(model, MODEL_PATH)
-print(f"\n✅ Refined model saved to {MODEL_PATH}")
+if __name__ == "__main__":
+    main()

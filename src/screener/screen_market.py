@@ -1,18 +1,19 @@
-# ✅ Updated screen_market.py with stacked model support
-
 import os
 import argparse
+import joblib
 import yfinance as yf
 import pandas as pd
-import joblib
 from datetime import datetime
 from src.indicators.ta_signals import add_indicators
-from src.utils.macro_features import get_macro_snapshot
-from src.config import FEATURE_COLS, MODEL_PATH
+from src.utils.macro_features import load_macro_cache
+from src.ml.regime_detector import RegimeEngine
+from src.utils.risk_management import garch_volatility, dynamic_kelly_size
+from src.config import FEATURE_COLS
 
 XGB_CALIBRATED_PATH = "models/xgb_calibrated.pkl"
 LGB_CALIBRATED_PATH = "models/lgb_calibrated.pkl"
 STACKED_MODEL_PATH = "models/stacked_model.pkl"
+OUTPUT_DIR = "logs"
 
 def load_models(mode):
     if mode == "xgb-only":
@@ -20,80 +21,112 @@ def load_models(mode):
     elif mode == "lgb-only":
         return None, joblib.load(LGB_CALIBRATED_PATH), None
     elif mode == "stacked":
-        return joblib.load(XGB_CALIBRATED_PATH), joblib.load(LGB_CALIBRATED_PATH), joblib.load(STACKED_MODEL_PATH)
+        return (
+            joblib.load(XGB_CALIBRATED_PATH),
+            joblib.load(LGB_CALIBRATED_PATH),
+            joblib.load(STACKED_MODEL_PATH),
+        )
     else:  # ensemble
-        return joblib.load(XGB_CALIBRATED_PATH), joblib.load(LGB_CALIBRATED_PATH), None
+        return (
+            joblib.load(XGB_CALIBRATED_PATH),
+            joblib.load(LGB_CALIBRATED_PATH),
+            None,
+        )
 
-def screen(mode="ensemble"):
+def screen_ticker(ticker, xgb_model, lgb_model, stacked_model, mode, threshold=0.55, hold_days=5):
+    try:
+        df = yf.download(ticker, period="3mo", progress=False)
+        if isinstance(df.columns, pd.MultiIndex):
+            df.columns = [col[0].lower() for col in df.columns]
+        else:
+            df.columns = [str(col).strip().lower() for col in df.columns]
+
+        df = add_indicators(df).dropna().copy()
+        if df.empty or len(df) < hold_days:
+            return None
+
+        row = df.iloc[-1:]
+        latest = row[FEATURE_COLS]
+
+        xgb_conf = xgb_model.predict_proba(latest)[0][1] if xgb_model else None
+        lgb_conf = lgb_model.predict_proba(latest)[0][1] if lgb_model else None
+
+        if mode == "xgb-only":
+            confidence = xgb_conf
+        elif mode == "lgb-only":
+            confidence = lgb_conf
+        elif mode == "stacked":
+            avg_conf = (xgb_conf + lgb_conf) / 2
+            conf_diff = abs(xgb_conf - lgb_conf)
+            meta = pd.DataFrame({
+                "xgb_conf": [xgb_conf],
+                "lgb_conf": [lgb_conf],
+                "avg_conf": [avg_conf],
+                "conf_diff": [conf_diff],
+            })
+            stacked_conf = stacked_model.predict_proba(meta)[0][1]
+            ensemble_conf = 0.6 * xgb_conf + 0.4 * lgb_conf
+            confidence = max(stacked_conf, ensemble_conf)
+        else:
+            confidence = 0.6 * xgb_conf + 0.4 * lgb_conf
+
+        if confidence < threshold:
+            return None
+
+        # 🧠 Regime detection + adaptive sizing
+        regime = RegimeEngine()
+        macro_df = load_macro_cache()
+        regime_state = regime.get_latest_regime(macro_df)
+        regime_boost = regime.get_regime_config(regime_state)["max_size"]
+
+        returns = df["close"].pct_change().dropna().iloc[-60:]
+        sigma = garch_volatility(returns)
+        mu = 0.03
+        position_size = dynamic_kelly_size(confidence, mu, sigma, regime_boost)
+
+        return {
+            "ticker": ticker,
+            "date": datetime.now().strftime("%Y-%m-%d"),
+            "confidence": round(confidence, 4),
+            "volatility": round(sigma, 4),
+            "position_size": round(position_size, 4),
+            "regime": regime_state,
+        }
+
+    except Exception as e:
+        print(f"⚠️ Screener error for {ticker}: {e}")
+        return None
+
+def run(mode):
     xgb_model, lgb_model, stacked_model = load_models(mode)
-
-    macro = get_macro_snapshot()
-    vix = macro.get("vix", 18)
-    dynamic_threshold = round(0.65 + 0.15 * (vix / 20), 2)
-    print("\n\U0001f310 Macro Snapshot:")
-    print(f"VIX       : {macro['vix']}")
-    print(f"USDINR    : {macro['usdinr']}")
-    print(f"CRUDE     : {macro['crude']}")
-    print(f"10Y       : {macro['10y']}")
-    print(f"\n\U0001f4c9 VIX-adjusted confidence threshold: {dynamic_threshold}\n")
 
     with open("data/top_tickers.txt") as f:
         tickers = [line.strip() for line in f]
 
-    results = []
+    macro_df = load_macro_cache()
+    latest_vix = macro_df["vix"].iloc[-1]
+    dynamic_threshold = round(0.65 + 0.15 * (latest_vix / 20), 2)
 
+    print(f"\n📉 VIX-adjusted threshold: {dynamic_threshold} (VIX = {latest_vix:.2f})\n")
+
+    signals = []
     for ticker in tickers:
-        try:
-            df = yf.download(ticker, period="2mo", progress=False)
-            if df.empty or len(df) < 30:
-                raise ValueError("Not enough data")
+        result = screen_ticker(ticker, xgb_model, lgb_model, stacked_model, mode, threshold=dynamic_threshold)
+        if result:
+            print(f"✅ {result['ticker']} | Conf: {result['confidence']} | Size: {result['position_size']} | Regime: {result['regime']}")
+            signals.append(result)
 
-            df = add_indicators(df).dropna()
-            df.columns = [col[0].strip() if isinstance(col, tuple) else str(col).strip() for col in df.columns]
-            latest = df[FEATURE_COLS].iloc[-1:]
-            latest.columns = latest.columns.str.strip()
-
-            if mode == "xgb-only":
-                confidence = xgb_model.predict_proba(latest)[0][1]
-            elif mode == "lgb-only":
-                confidence = lgb_model.predict_proba(latest)[0][1]
-            elif mode == "stacked":
-                xgb_conf = xgb_model.predict_proba(latest)[0][1]
-                lgb_conf = lgb_model.predict_proba(latest)[0][1]
-                meta_features = pd.DataFrame({"xgb_conf": [xgb_conf], "lgb_conf": [lgb_conf]})
-                confidence = stacked_model.predict_proba(meta_features)[0][1]
-            else:  # ensemble
-                xgb_conf = xgb_model.predict_proba(latest)[0][1]
-                lgb_conf = lgb_model.predict_proba(latest)[0][1]
-                confidence = 0.6 * xgb_conf + 0.4 * lgb_conf
-
-            print(f"\U0001f50d {ticker}: confidence = {confidence:.3f}")
-
-            if confidence >= dynamic_threshold:
-                results.append({
-                    "ticker": ticker,
-                    "confidence": round(confidence, 3),
-                    "position_size": round(confidence * 100, 2)
-                })
-
-        except Exception as e:
-            print(f"\u26a0\ufe0f Error with {ticker}: {e}")
-
-    if not results:
-        print("\u274c No valid predictions were made — possibly due to insufficient data or macro filtering.")
+    if not signals:
+        print("❌ No signals met the threshold.")
         return
 
-    df_out = pd.DataFrame(results).sort_values(by="confidence", ascending=False)
-    print("\n\U0001f4c8 Top Predictions:")
-    print(df_out.head(10))
-
-    now = datetime.now().strftime("%Y%m%d")
-    output_path = f"logs/screener_{now}.csv"
-    df_out.to_csv(output_path, index=False)
-    print(f"\u2705 Saved predictions to {output_path}")
+    df = pd.DataFrame(signals)
+    filename = f"{OUTPUT_DIR}/screener_{mode}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+    df.to_csv(filename, index=False)
+    print(f"📈 Screener results saved to {filename}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--mode", choices=["xgb-only", "lgb-only", "ensemble", "stacked"], default="ensemble")
+    parser.add_argument("--mode", choices=["xgb-only", "lgb-only", "ensemble", "stacked"], default="stacked")
     args = parser.parse_args()
-    screen(mode=args.mode)
+    run(mode=args.mode)

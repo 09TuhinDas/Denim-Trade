@@ -1,64 +1,59 @@
-
-# src/utils/macro_features.py
 import os
-import yfinance as yf
 import pandas as pd
-from datetime import datetime, timedelta
+import numpy as np
+import yfinance as yf
+from datetime import datetime
 
-CACHE_PATH = "data/macro_cache.csv"
+MACRO_CACHE_PATH = "data/macro_cache.csv"
 
-def fetch_macro_data():
-    now = datetime.today()
-    start = now - timedelta(days=365)
-    macro = {}
+# ----------------------
+# Generate High-Quality Macro Dataset for Swing Trading
+# ----------------------
+def generate_macro_cache(path=MACRO_CACHE_PATH):
+    print("📊 Fetching macro data for regime modeling...")
 
-    symbols = {
-        "vix": "^INDIAVIX",
-        "usdinr": "USDINR=X",
-        "crude": "BZ=F",
-        "10y": "^IRX"
-    }
+    try:
+        # Fetch NIFTYBEES as NIFTY proxy
+        nifty = yf.download("NIFTYBEES.NS", start="2023-01-01", interval="1d", progress=False)["Close"]
+        print("✅ NIFTY fetched")
 
-    for name, symbol in symbols.items():
-        try:
-            df = yf.download(symbol, period="1y", progress=False)
-            value = df['Close'].dropna().iloc[-1]
-            macro[name] = round(float(value.iloc[0] if isinstance(value, pd.Series) else value), 2)
-        except Exception as e:
-            print(f"⚠️ Failed to fetch {name}: {e}")
-            macro[name] = float("nan")
+        # Fetch USDINR
+        usdinr = yf.download("INR=X", start="2023-01-01", interval="1d", progress=False)["Close"]
+        print("✅ USDINR fetched")
+
+    except Exception as e:
+        print(f"❌ Error fetching market data: {e}")
+        return
+
+    # Compute NIFTY return
+    nifty_return = nifty.pct_change()
+    vix_proxy = nifty_return.rolling(5).std() * np.sqrt(252)
+
+    # Simulate FII flow
+    np.random.seed(42)
+    fii_flow = pd.Series(np.random.normal(0, 500, len(nifty)), index=nifty.index)
+
+    # Combine all series with consistent column names
+    df = pd.concat([vix_proxy, nifty, usdinr, fii_flow, nifty_return], axis=1)
+    df.columns = ["vix", "nifty", "usdinr", "fii_flow", "nifty_return"]
+
+    df.dropna(inplace=True)
+    df = df.reset_index(drop=True)
 
     # Save to cache
-    df = pd.DataFrame([macro])
-    df.index = [datetime.now()]
-    df.to_csv(CACHE_PATH)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    df.to_csv(path, index=False)
+    print(f"✅ Saved macro regime features to {path}")
+    print(df.head())
 
-    return df
+# ----------------------
+# Load Dataset
+# ----------------------
+def load_macro_cache(path=MACRO_CACHE_PATH):
+    return pd.read_csv(path)
 
-
-def load_macro_data():
-    if os.path.exists(CACHE_PATH):
-        return pd.read_csv(CACHE_PATH, index_col=0, parse_dates=True)
-    return fetch_macro_data()
-
-def get_macro_snapshot(date=None):
-    df = load_macro_data()
-    
-    if date:
-        df = df[df.index <= pd.to_datetime(date)]
-
-    if df is None or df.empty or df.iloc[-1].isnull().any():
-        return {
-            "vix": 18,
-            "usdinr": 83,
-            "crude": 80,
-            "10y": 6.5
-        }
-
-    latest = df.iloc[-1]
-    return {
-        "vix": latest.get("vix", 18),
-        "usdinr": latest.get("usdinr", 83),
-        "crude": latest.get("crude", 80),
-        "10y": latest.get("10y", 6.5)
-    }
+# ----------------------
+# CLI Entry Point
+# ----------------------
+if __name__ == "__main__":
+    generate_macro_cache()
