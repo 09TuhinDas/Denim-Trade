@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
 import warnings
+from src.indicators.microstructure import compute_imbalance
+
 
 warnings.filterwarnings("ignore")
 
@@ -44,6 +46,13 @@ def add_indicators(df):
     # 🔮 Nonlinear Features (AlphaPulse etc.)
     # ============================
     df["alpha_pulse"] = np.tanh(df["rsi"] * df["macd"] / (df["atr"] + 1e-6))
+
+    try:
+        from src.indicators.microstructure import compute_imbalance
+        df = compute_imbalance(df)
+    except ValueError:
+        pass  # skip if microstructure columns aren't present
+
 
     return df
 

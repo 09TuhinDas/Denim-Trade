@@ -4,16 +4,19 @@ import joblib
 import yfinance as yf
 import pandas as pd
 from datetime import datetime
+
 from src.indicators.ta_signals import add_indicators
 from src.utils.macro_features import load_macro_cache
 from src.ml.regime_detector import RegimeEngine
 from src.utils.risk_management import garch_volatility, dynamic_kelly_size
 from src.config import FEATURE_COLS
+from src.utils.path_manager import TOP_TICKERS, SCREEN_LOGS_DIR
+from src.utils.status_manager import update_status
+from src.utils.ticker_loader import load_nse_tickers
 
 XGB_CALIBRATED_PATH = "models/xgb_calibrated.pkl"
 LGB_CALIBRATED_PATH = "models/lgb_calibrated.pkl"
 STACKED_MODEL_PATH = "models/stacked_model.pkl"
-OUTPUT_DIR = "logs"
 
 def load_models(mode):
     if mode == "xgb-only":
@@ -73,7 +76,6 @@ def screen_ticker(ticker, xgb_model, lgb_model, stacked_model, mode, threshold=0
         if confidence < threshold:
             return None
 
-        # 🧠 Regime detection + adaptive sizing
         regime = RegimeEngine()
         macro_df = load_macro_cache()
         regime_state = regime.get_latest_regime(macro_df)
@@ -96,22 +98,24 @@ def screen_ticker(ticker, xgb_model, lgb_model, stacked_model, mode, threshold=0
     except Exception as e:
         print(f"⚠️ Screener error for {ticker}: {e}")
         return None
-
-def run(mode):
+    
+def run(mode, confidence_override=None, save_path_override=None):
     xgb_model, lgb_model, stacked_model = load_models(mode)
 
-    with open("data/top_tickers.txt") as f:
-        tickers = [line.strip() for line in f]
+    tickers = load_nse_tickers()
+
+    
 
     macro_df = load_macro_cache()
     latest_vix = macro_df["vix"].iloc[-1]
     dynamic_threshold = round(0.65 + 0.15 * (latest_vix / 20), 2)
 
-    print(f"\n📉 VIX-adjusted threshold: {dynamic_threshold} (VIX = {latest_vix:.2f})\n")
+    confidence_threshold = confidence_override if confidence_override is not None else dynamic_threshold
+    print(f"\n📉 VIX-adjusted threshold: {confidence_threshold} (VIX = {latest_vix:.2f})\n")
 
     signals = []
     for ticker in tickers:
-        result = screen_ticker(ticker, xgb_model, lgb_model, stacked_model, mode, threshold=dynamic_threshold)
+        result = screen_ticker(ticker, xgb_model, lgb_model, stacked_model, mode, threshold=confidence_threshold)
         if result:
             print(f"✅ {result['ticker']} | Conf: {result['confidence']} | Size: {result['position_size']} | Regime: {result['regime']}")
             signals.append(result)
@@ -121,12 +125,24 @@ def run(mode):
         return
 
     df = pd.DataFrame(signals)
-    filename = f"{OUTPUT_DIR}/screener_{mode}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+
+    if save_path_override:
+        filename = save_path_override
+    else:
+        filename = SCREEN_LOGS_DIR / f"screener_{mode}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+
     df.to_csv(filename, index=False)
     print(f"📈 Screener results saved to {filename}")
 
+    update_status("last_screen")
+
+
+
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--mode", choices=["xgb-only", "lgb-only", "ensemble", "stacked"], default="stacked")
+    parser = argparse.ArgumentParser(description="Run market screener")
+    parser.add_argument("--mode", choices=["xgb-only", "lgb-only", "ensemble", "stacked"], default="stacked", help="Which model to use")
+    parser.add_argument("--confidence", type=float, default=None, help="Manually override confidence threshold")
+    parser.add_argument("--save_path", type=str, default=None, help="Optional: manually override save path")
+
     args = parser.parse_args()
-    run(mode=args.mode)
+    run(mode=args.mode, confidence_override=args.confidence, save_path_override=args.save_path)

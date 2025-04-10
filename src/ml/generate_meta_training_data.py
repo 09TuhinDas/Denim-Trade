@@ -1,3 +1,4 @@
+from src.utils.path_manager import *
 
 import os
 import yfinance as yf
@@ -12,7 +13,7 @@ from sklearn.exceptions import NotFittedError
 XGB_CALIBRATED_PATH = "models/xgb_calibrated.pkl"
 LGB_CALIBRATED_PATH = "models/lgb_calibrated.pkl"
 TICKERS_FILE = "data/top_tickers.txt"
-OUTPUT_FILE = "data/meta_training.csv"
+OUTPUT_FILE = META_TRAINING
 
 def generate_meta_data():
     assert os.path.exists(XGB_CALIBRATED_PATH), "Missing XGB model"

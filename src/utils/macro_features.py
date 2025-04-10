@@ -1,10 +1,11 @@
+from src.utils.path_manager import *
 import os
 import pandas as pd
 import numpy as np
 import yfinance as yf
 from datetime import datetime
 
-MACRO_CACHE_PATH = "data/macro_cache.csv"
+MACRO_CACHE_PATH = MACRO_CACHE
 
 # ----------------------
 # Generate High-Quality Macro Dataset for Swing Trading

@@ -2,7 +2,8 @@ from src.config import FEATURE_COLS, CONFIDENCE_THRESHOLD, MODEL_PATH, HOLD_DAYS
 import pandas as pd
 import joblib
 from src.indicators.ta_signals import add_indicators
-from utils.data_fetcher import fetch_stock_data
+from src.utils.data_fetcher import fetch_stock_data
+
 
 
 

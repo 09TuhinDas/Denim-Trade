@@ -2,7 +2,7 @@ from src.config import TICKERS
 
 from src.config import FEATURE_COLS, CONFIDENCE_THRESHOLD, MODEL_PATH, HOLD_DAYS, PROFIT_TARGET, CONFIDENCE_EXIT_THRESHOLD
 import pandas as pd
-from src.backtest.backtest_model import backtest
+from archive.backtest_model import backtest
 
 
 

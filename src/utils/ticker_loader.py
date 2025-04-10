@@ -1,6 +1,7 @@
+from src.utils.path_manager import *
 import pandas as pd
 
-def load_nse_tickers(csv_path="data/nse_equity_list.csv"):
+def load_nse_tickers(csv_path=NSE_TICKER_LIST):
     df = pd.read_csv(csv_path)
     
     # Assume symbol is under "SYMBOL" or similar

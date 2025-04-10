@@ -1,3 +1,4 @@
+from src.utils.path_manager import *
 
 import os
 import joblib
@@ -11,7 +12,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
 
 def main():
-    meta_data_path = "data/meta_training.csv"
+    meta_data_path = META_TRAINING
     assert os.path.exists(meta_data_path), f"Meta training file not found: {meta_data_path}"
 
     meta_df = pd.read_csv(meta_data_path)

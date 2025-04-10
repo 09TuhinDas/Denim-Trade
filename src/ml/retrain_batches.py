@@ -1,3 +1,4 @@
+from src.utils.path_manager import *
 
 import os
 import json
@@ -12,7 +13,7 @@ from src.utils.labeling import compute_swing_label_v2
 from src.config import FEATURE_COLS, BATCH_SIZE, PROCESSED_LOG_PATH, RAW_DATA_FOLDER
 
 def load_all_tickers():
-    df = pd.read_csv("data/nse_equity_list.csv")
+    df = pd.read_csv(NSE_TICKER_LIST)
     return df['SYMBOL'].astype(str).str.upper().str.strip().apply(lambda x: f"{x}.NS").tolist()
 
 def load_processed_tickers():
