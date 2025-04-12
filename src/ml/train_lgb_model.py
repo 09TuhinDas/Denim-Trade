@@ -6,6 +6,7 @@ import pandas as pd
 import lightgbm as lgb
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
+from sklearn.preprocessing import LabelEncoder  # ✅ NEW
 from src.config import RAW_DATA_FOLDER, FEATURE_COLS
 
 TOP_TICKERS_PATH = "data/top_tickers.txt"
@@ -53,15 +54,21 @@ def train():
     X = X[FEATURE_COLS]
     X.columns = X.columns.str.strip()
 
+    # ✅ Encode labels to ensure 0,1,2 format
+    le = LabelEncoder()
+    y_encoded = le.fit_transform(y)
+
     X_train, X_val, y_train, y_val = train_test_split(
-        X, y, stratify=y, test_size=0.2, random_state=42
+        X, y_encoded, stratify=y_encoded, test_size=0.2, random_state=42
     )
 
     model = lgb.LGBMClassifier(
+        objective='multiclass',  # ✅ multiclass objective
         n_estimators=100,
         learning_rate=0.05,
         class_weight="balanced",
-        random_state=42
+        random_state=42,
+        num_class=3  # ✅ optional, makes logic explicit
     )
     model.fit(X_train, y_train)
 
@@ -70,7 +77,9 @@ def train():
     print(classification_report(y_val, preds))
 
     joblib.dump(model, MODEL_PATH)
+    joblib.dump(le, "models/label_encoder.pkl")  # ✅ Save encoder too
     print(f"\n✅ LightGBM model saved to {MODEL_PATH}")
+    print(f"✅ Label encoder saved to models/label_encoder.pkl")
 
 if __name__ == "__main__":
     train()

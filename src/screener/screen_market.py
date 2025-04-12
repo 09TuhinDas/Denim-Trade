@@ -17,6 +17,7 @@ from src.utils.ticker_loader import load_nse_tickers
 XGB_CALIBRATED_PATH = "models/xgb_calibrated.pkl"
 LGB_CALIBRATED_PATH = "models/lgb_calibrated.pkl"
 STACKED_MODEL_PATH = "models/stacked_model.pkl"
+ALLOW_SHORT = True  # ✅ toggle if needed
 
 def load_models(mode):
     if mode == "xgb-only":
@@ -51,30 +52,41 @@ def screen_ticker(ticker, xgb_model, lgb_model, stacked_model, mode, threshold=0
         row = df.iloc[-1:]
         latest = row[FEATURE_COLS]
 
-        xgb_conf = xgb_model.predict_proba(latest)[0][1] if xgb_model else None
-        lgb_conf = lgb_model.predict_proba(latest)[0][1] if lgb_model else None
+        xgb_proba = xgb_model.predict_proba(latest)[0] if xgb_model else [0, 0, 0]
+        lgb_proba = lgb_model.predict_proba(latest)[0] if lgb_model else [0, 0, 0]
+
+        # Meta input
+        avg_conf = (xgb_proba[1] + lgb_proba[1]) / 2
+        conf_diff = abs(xgb_proba[1] - lgb_proba[1])
 
         if mode == "xgb-only":
-            confidence = xgb_conf
+            final_label = xgb_model.predict(latest)[0]
+            confidence = max(xgb_proba)
         elif mode == "lgb-only":
-            confidence = lgb_conf
+            final_label = lgb_model.predict(latest)[0]
+            confidence = max(lgb_proba)
         elif mode == "stacked":
-            avg_conf = (xgb_conf + lgb_conf) / 2
-            conf_diff = abs(xgb_conf - lgb_conf)
             meta = pd.DataFrame({
-                "xgb_conf": [xgb_conf],
-                "lgb_conf": [lgb_conf],
+                "xgb_conf": [xgb_proba[1]],
+                "lgb_conf": [lgb_proba[1]],
                 "avg_conf": [avg_conf],
                 "conf_diff": [conf_diff],
             })
-            stacked_conf = stacked_model.predict_proba(meta)[0][1]
-            ensemble_conf = 0.6 * xgb_conf + 0.4 * lgb_conf
-            confidence = max(stacked_conf, ensemble_conf)
-        else:
-            confidence = 0.6 * xgb_conf + 0.4 * lgb_conf
+            proba = stacked_model.predict_proba(meta)[0]
+            final_label = proba.argmax()
+            confidence = max(proba)
+        else:  # ensemble
+            ensemble_conf = 0.6 * xgb_proba[1] + 0.4 * lgb_proba[1]
+            confidence = ensemble_conf
+            final_label = 1 if ensemble_conf >= threshold else 0
 
-        if confidence < threshold:
+        if confidence < threshold or final_label == 0:
             return None
+
+        if final_label == 2 and not ALLOW_SHORT:
+            return None  # skip short if disabled
+
+        direction = "long" if final_label == 1 else "short"
 
         regime = RegimeEngine()
         macro_df = load_macro_cache()
@@ -83,12 +95,13 @@ def screen_ticker(ticker, xgb_model, lgb_model, stacked_model, mode, threshold=0
 
         returns = df["close"].pct_change().dropna().iloc[-60:]
         sigma = garch_volatility(returns)
-        mu = 0.03
+        mu = 0.03 if direction == "long" else -0.03
         position_size = dynamic_kelly_size(confidence, mu, sigma, regime_boost)
 
         return {
             "ticker": ticker,
             "date": datetime.now().strftime("%Y-%m-%d"),
+            "direction": direction,
             "confidence": round(confidence, 4),
             "volatility": round(sigma, 4),
             "position_size": round(position_size, 4),
@@ -98,13 +111,10 @@ def screen_ticker(ticker, xgb_model, lgb_model, stacked_model, mode, threshold=0
     except Exception as e:
         print(f"⚠️ Screener error for {ticker}: {e}")
         return None
-    
+
 def run(mode, confidence_override=None, save_path_override=None):
     xgb_model, lgb_model, stacked_model = load_models(mode)
-
     tickers = load_nse_tickers()
-
-    
 
     macro_df = load_macro_cache()
     latest_vix = macro_df["vix"].iloc[-1]
@@ -117,7 +127,7 @@ def run(mode, confidence_override=None, save_path_override=None):
     for ticker in tickers:
         result = screen_ticker(ticker, xgb_model, lgb_model, stacked_model, mode, threshold=confidence_threshold)
         if result:
-            print(f"✅ {result['ticker']} | Conf: {result['confidence']} | Size: {result['position_size']} | Regime: {result['regime']}")
+            print(f"✅ {result['ticker']} | {result['direction'].upper()} | Conf: {result['confidence']} | Size: {result['position_size']} | Regime: {result['regime']}")
             signals.append(result)
 
     if not signals:
@@ -135,8 +145,6 @@ def run(mode, confidence_override=None, save_path_override=None):
     print(f"📈 Screener results saved to {filename}")
 
     update_status("last_screen")
-
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run market screener")

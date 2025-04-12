@@ -1,4 +1,3 @@
-
 # src/backtest/evaluate_trades.py
 
 import pandas as pd
@@ -17,6 +16,10 @@ def evaluate(file_path):
         print("❌ No trades found.")
         return
 
+    if "return" not in df.columns:
+        print("❌ 'return' column missing in backtest file.")
+        return
+
     total_trades = len(df)
     wins = df[df['return'] > 0]
     losses = df[df['return'] <= 0]
@@ -28,8 +31,6 @@ def evaluate(file_path):
     win_rate = len(wins) / total_trades
     avg_win = wins['return'].mean() if not wins.empty else 0
     avg_loss = losses['return'].mean() if not losses.empty else 0
-
-    # Sharpe ratio approximation
     sharpe = np.mean(df['return']) / (np.std(df['return']) + 1e-9) * np.sqrt(252 / 5)
 
     print(f"📊 Trade Evaluation from: {file_path}")
@@ -43,6 +44,25 @@ def evaluate(file_path):
     print(f"  TP  : {len(tp)}")
     print(f"  SL  : {len(sl)}")
     print(f"  EXP : {len(exp)}")
+
+    # Optional: Long vs Short breakdown
+    if "direction" in df.columns:
+        print("\n📈 Directional Stats:")
+
+        for direction in ["long", "short"]:
+            sub_df = df[df["direction"] == direction]
+            if sub_df.empty:
+                print(f"  No {direction.upper()} trades")
+                continue
+
+            d_win_rate = (sub_df["return"] > 0).mean()
+            d_avg_return = sub_df["return"].mean()
+            d_sharpe = np.mean(sub_df['return']) / (np.std(sub_df['return']) + 1e-9) * np.sqrt(252 / 5)
+
+            print(f"  {direction.upper()} Trades: {len(sub_df)}")
+            print(f"    Win Rate: {d_win_rate:.2%}")
+            print(f"    Avg Return: {d_avg_return:.2%}")
+            print(f"    Sharpe: {d_sharpe:.2f}")
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:

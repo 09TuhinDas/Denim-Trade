@@ -9,7 +9,7 @@ import pandas as pd
 from tqdm import tqdm
 from datetime import datetime
 from src.indicators.ta_signals import add_indicators
-from src.utils.labeling import compute_swing_label_v2
+from src.utils.labeling import compute_swing_label_with_short
 from src.config import FEATURE_COLS, BATCH_SIZE, PROCESSED_LOG_PATH, RAW_DATA_FOLDER
 
 def load_all_tickers():
@@ -34,9 +34,11 @@ def fetch_and_process(ticker):
         df = add_indicators(df).dropna()
 
         # Apply enhanced labeling logic
-        df = compute_swing_label_v2(df, profit_target=0.03, stop_loss=0.02, hold_days=5)
+        df = compute_swing_label_with_short(df, profit_target=0.03, stop_loss=0.02, hold_days=5)
         df["ticker"] = ticker
         df = df.dropna(subset=["label"])
+        label_counts = df["label"].value_counts().to_dict()
+        print(f"✅ {ticker} label distribution: {label_counts}")
 
         if len(df) < 50:
             return None, None
