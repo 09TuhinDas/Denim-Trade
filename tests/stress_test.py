@@ -1,6 +1,6 @@
 import pandas as pd
 import joblib
-from src.backtest.backtest_walk_forward import backtest_ticker
+from archive.backtest_walk_forward import backtest_ticker
 from src.utils.macro_features import load_macro_cache
 
 STARTING_CAPITAL = 100_000

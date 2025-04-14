@@ -9,6 +9,7 @@ import pandas as pd
 from tqdm import tqdm
 from datetime import datetime
 from src.indicators.ta_signals import add_indicators
+from src.indicators.short_features import add_short_features
 from src.utils.labeling import compute_swing_label_with_short
 from src.config import FEATURE_COLS, BATCH_SIZE, PROCESSED_LOG_PATH, RAW_DATA_FOLDER
 
@@ -33,21 +34,35 @@ def fetch_and_process(ticker):
         df.columns = [col[0] if isinstance(col, tuple) else col for col in df.columns]
         df = add_indicators(df).dropna()
 
+        # Add synthetic short-side data for Phase 2
+        df["put_volume"] = 100 + (df["close"] * 0.1).astype(int)
+        df["call_volume"] = 80 + (df["close"] * 0.08).astype(int)
+        df["vix"] = df["close"].pct_change().rolling(5).std() * 100
+        df["bid_volume"] = df["volume"] * 0.6
+        df["ask_volume"] = df["volume"] * 0.4
+        df["news_buzz"] = df["close"].rolling(3).mean() % 1
+        df["buy_intent"] = df["close"].rolling(5).std() % 1
+
+        # ✅ Add engineered short features
+        df = add_short_features(df)
+
         # Apply enhanced labeling logic
         df = compute_swing_label_with_short(df, profit_target=0.03, stop_loss=0.02, hold_days=5)
         df["ticker"] = ticker
-        df = df.dropna(subset=["label"])
-        label_counts = df["label"].value_counts().to_dict()
+
+        # Drop rows with no valid label
+        df = df.dropna(subset=["direction_label"])
+        label_counts = df["direction_label"].value_counts().to_dict()
         print(f"✅ {ticker} label distribution: {label_counts}")
 
         if len(df) < 50:
             return None, None
 
         # Build features and target
-        X = df[FEATURE_COLS + ["ticker"]].copy()
+        X = df[FEATURE_COLS + ["gamma_index", "blackhole", "panic_score", "ticker"]].copy()
         X["volatility"] = df["volatility"]
         X["kelly_fraction"] = df["kelly_fraction"]
-        y = df["label"]
+        y = df["direction_label"]
 
         return X, y
 

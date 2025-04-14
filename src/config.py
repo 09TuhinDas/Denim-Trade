@@ -1,13 +1,13 @@
 
 from src.utils.ticker_loader import load_nse_tickers
 
-# ✅ Features used in training & prediction
 FEATURE_COLS = [
     "rsi", "macd", "ema20", "ema10", "ema_crossover",
-    "adx", "bb_width", "obv",
-    "stochrsi_k", "stochrsi_d",
+    "adx", "bb_width", "obv", "stochrsi_k", "stochrsi_d",
     "cci", "roc"
-]
+]  # ✅ Only 12
+
+
 
 # ✅ Thresholds
 CONFIDENCE_BASE = 0.6  # Base threshold before adjusting with VIX

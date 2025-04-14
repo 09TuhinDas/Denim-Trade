@@ -1,4 +1,3 @@
-# src/backtest/evaluate_trades.py
 
 import pandas as pd
 import numpy as np
@@ -16,16 +15,24 @@ def evaluate(file_path):
         print("❌ No trades found.")
         return
 
+    # Patch: map 'pnl' to 'return' if needed
     if "return" not in df.columns:
-        print("❌ 'return' column missing in backtest file.")
-        return
+        if "pnl" in df.columns:
+            df["return"] = df["pnl"]
+        else:
+            print("❌ 'return' or 'pnl' column missing in backtest file.")
+            return
+
+    # Patch: map 'decision' to 'direction'
+    if "direction" not in df.columns and "decision" in df.columns:
+        df["direction"] = df["decision"].map({1: "long", -1: "short"})
 
     total_trades = len(df)
     wins = df[df['return'] > 0]
     losses = df[df['return'] <= 0]
-    tp = df[df['exit'] == 'TP']
-    sl = df[df['exit'] == 'SL']
-    exp = df[df['exit'] == 'EXP']
+    tp = df[df['exit'] == 'TP'] if 'exit' in df.columns else pd.DataFrame()
+    sl = df[df['exit'] == 'SL'] if 'exit' in df.columns else pd.DataFrame()
+    exp = df[df['exit'] == 'EXP'] if 'exit' in df.columns else pd.DataFrame()
 
     avg_return = df['return'].mean()
     win_rate = len(wins) / total_trades
@@ -40,15 +47,15 @@ def evaluate(file_path):
     print(f"Average Return: {avg_return:.2%}")
     print(f"Avg Win: {avg_win:.2%} | Avg Loss: {avg_loss:.2%}")
     print(f"Sharpe Ratio (approx): {sharpe:.2f}")
-    print(f"Exit Reason Breakdown:")
-    print(f"  TP  : {len(tp)}")
-    print(f"  SL  : {len(sl)}")
-    print(f"  EXP : {len(exp)}")
 
-    # Optional: Long vs Short breakdown
+    if not tp.empty or not sl.empty or not exp.empty:
+        print(f"Exit Reason Breakdown:")
+        print(f"  TP  : {len(tp)}")
+        print(f"  SL  : {len(sl)}")
+        print(f"  EXP : {len(exp)}")
+
     if "direction" in df.columns:
         print("\n📈 Directional Stats:")
-
         for direction in ["long", "short"]:
             sub_df = df[df["direction"] == direction]
             if sub_df.empty:
