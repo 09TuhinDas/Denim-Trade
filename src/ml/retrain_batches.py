@@ -1,3 +1,4 @@
+
 from src.utils.path_manager import *
 
 import os
@@ -64,6 +65,9 @@ def fetch_and_process(ticker):
         X["kelly_fraction"] = df["kelly_fraction"]
         y = df["direction_label"]
 
+        # Clean out NaNs just in case
+        X, y = X.dropna(), y.loc[X.index]
+
         return X, y
 
     except Exception as e:
@@ -91,6 +95,12 @@ def main():
     for ticker in tqdm(tickers_to_process):
         X, y = fetch_and_process(ticker)
         if X is None or y is None:
+            continue
+
+        label_counts = y.value_counts().to_dict()
+        print("🔍 Label counts in this batch:", label_counts)
+        if label_counts.get(0, 0) < 30 or -1 not in label_counts:
+            print(f"⚠️ Skipping batch — missing label -1 or 0: {label_counts}")
             continue
 
         batch.append({"X": X, "y": y})

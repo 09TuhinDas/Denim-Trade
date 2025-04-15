@@ -6,14 +6,13 @@ import numpy as np
 import pandas as pd
 from datetime import datetime
 from src.config import FEATURE_COLS, PROFIT_TARGET, HOLD_DAYS, RAW_DATA_FOLDER
-from src.ml.quantum_short_model import QuantumShortSignal
+from src.config import SHORT_MODEL_PATH
 from src.utils.risk_management import garch_volatility, dynamic_kelly_size
 from src.utils.macro_features import load_macro_cache
 from src.ml.regime_detector import RegimeEngine
 from src.arbitrage_balancer import decide_trade
 
 XGB_MODEL_PATH = "models/xgb_calibrated.pkl"
-SHORT_MODEL_PATH = "models/short_model.pkl"
 LOG_PATH = "logs/backtest_runs/dual_trades_log.csv"
 
 def evaluate_trade_window(prices, direction, profit_target=0.03, stop_loss=0.02):
@@ -33,8 +32,7 @@ def evaluate_trade_window(prices, direction, profit_target=0.03, stop_loss=0.02)
 
 def load_models():
     xgb_model = joblib.load(XGB_MODEL_PATH)
-    short_model = QuantumShortSignal()
-    short_model.model = joblib.load(SHORT_MODEL_PATH)
+    short_model = joblib.load(SHORT_MODEL_PATH)
     return xgb_model, short_model
 
 def run_backtest():
@@ -68,7 +66,7 @@ def run_backtest():
                         short_X = row
 
                         long_conf = xgb_model.predict_proba(long_X)[0][1]
-                        short_conf = short_model.predict_proba(short_X)[0]
+                        short_conf = short_model.predict_proba(short_X)[0][1]
 
                         decision = decide_trade(long_conf, short_conf, threshold=0.6, margin=0.05)
                         if decision == 0:
@@ -112,8 +110,19 @@ def run_backtest():
 
     # Final save
     os.makedirs(os.path.dirname(LOG_PATH), exist_ok=True)
-    pd.DataFrame(logs).to_csv(LOG_PATH, index=False)
+    df = pd.DataFrame(logs)
+    df.to_csv(LOG_PATH, index=False)
+
+    # 📊 Summary Statistics
+    print("📈 Total Trades:", len(df))
+    print("✅ Win Rate:", (df['pnl'] > 0).mean())
+    print("📊 Avg PnL:", df['pnl'].mean())
+    print("📉 Max Drawdown:", df['pnl'].min())
     print(f"✅ Backtest complete. Trades logged to {LOG_PATH}")
+
+    # Optional: Separate LONG and SHORT logs
+    df[df["decision"] == 1].to_csv("logs/backtest_runs/long_trades.csv", index=False)
+    df[df["decision"] == -1].to_csv("logs/backtest_runs/short_trades.csv", index=False)
 
 if __name__ == "__main__":
     run_backtest()
